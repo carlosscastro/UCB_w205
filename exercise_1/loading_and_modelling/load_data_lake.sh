@@ -1,12 +1,10 @@
 
 echo "Downloading hospital data..."
 
-wget -O /home/w205/exercise_1/loading_and_modelling/hospital_data.zip https://data.medicare.gov/views/bg9k-emty/files/Nqcy71p9Ss2RSBWDmP77H1DQXcyacr2khotGbDHHW_s?content_type=application%2Fzip%3B%20charset%3Dbinary&filename=Hospital_Revised_Flatfiles.zip
-
-cd /home/w205/exercise_1/loading_and_modelling/
+wget -O hospital_data.zip "https://data.medicare.gov/views/bg9k-emty/files/Nqcy71p9Ss2RSBWDmP77H1DQXcyacr2khotGbDHHW_s?content_type=application%2Fzip%3B%20charset%3Dbinary&filename=Hospital_Revised_Flatfiles.zip"
 
 echo "Decompressing hospital data..."
-unzip hospital_data.zip 
+unzip hospital_data.zip
 echo "Decompression completed"
 
 mv "Hospital General Information.csv" hospitals.csv
