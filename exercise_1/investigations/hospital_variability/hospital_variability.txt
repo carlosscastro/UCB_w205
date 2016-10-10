@@ -1,0 +1,60 @@
+
+-----------------------------------------------------
+Procedures with Greatest Variability Across Hospitals
+-----------------------------------------------------
+
+--------
+Overview
+--------
+
+To decide what are the proceudres with the greatest variability across hospitals, we use 2 different approaches, getting to very similar results. 
+
+The nature of both approaches is the same: calculate the variability for each procedure (next section explains the approaches), considering all readmissions, complications and effective care. Then select the measures with highest variability by sorting all the measures by their variability and selecting the top 10 results.
+
+-----------------------
+Calculating Variability
+-----------------------
+
+### Method 1: Score range ###
+
+We calculate the variability in the simplest way, get the max and min value from our auxiliary tables complications_max, readmissions_max and effective_care_max, and compute the set union of the results. Then order by variability to get the highest variability. We define the variability as the minimum score divided by the maximum score. So smaller variability index indicates higher variability.
+
+### Method 2: Variance ###
+
+A richer measure of variability could be to calculate the actual variance of the scores for each measure, and then select those with the highest variance. 
+
+-------------------------------------
+Results: Top 10 Procedure Variability
+-------------------------------------
+
+### Method 1 ###
+
+Measure ID              Measure                                                                                                               Variability score (smaller means more variability)
+
+MORT_30_CABG            30-Day All-Cause Mortality Following Coronary Artery Bypass Graft (CABG) Surgery                                      0.1739130434782609
+COMP_HIP_KNEE           Complication Rate Following Elective Primary  Total Hip Arthroplasty (THA) and/or Total Knee Arthroplasty (TKA)       0.20289855072463767
+COMP_HIP_KNEE           Complication Rate Following Elective Primary  Total Hip Arthroplasty (THA) and/or Total Knee Arthroplasty (TKA)       0.20289855072463767
+READM_30_HIP_KNEE       30-Day Readmission Rate Following Elective Primary Total Hip Arthroplasty (THA) and/or Total Knee Arthroplasty (TKA)  0.3058823529411765
+MORT_30_PN              Pneumonia 30-Day Mortality Rate                                                                                       0.33990147783251234
+MORT_30_COPD            Chronic Obstructive Pulmonary Disease (COPD) 30-Day Mortality Rate                                                    0.34782608695652173
+MORT_30_HF              Heart Failure (HF) 30-Day Mortality Rate                                                                              0.3891891891891892
+MORT_30_STK             Acute Ischemic Stroke (STK) 30-Day Mortality Rate                                                                     0.390134529147982
+MORT_30_AMI             Acute Myocardial Infarction (AMI) 30-Day Mortality Rate                                                               0.48058252427184467
+READM_30_STK            Stroke (STK) 30-Day Readmission Rate                                                                                  0.4971428571428571
+
+### Method 2 ###
+
+CAC_1                   Relievers for Inpatient Asthma                                                                                        0.020403780068728526
+COMP_HIP_KNEE           Complication Rate Following Elective Primary  Total Hip Arthroplasty (THA) and/or Total Knee Arthroplasty (TKA)       0.35052534803244706
+READM_30_HIP_KNEE       30-Day Readmission Rate Following Elective Primary Total Hip Arthroplasty (THA) and/or Total Knee Arthroplasty (TKA)  0.3963190580593775
+MORT_30_CABG            30-Day All-Cause Mortality Following Coronary Artery Bypass Graft (CABG) Surgery                                      0.6514051002080625
+READM_30_HOSP_WIDE      30-Day Hospital-Wide All-Cause Unplanned Readmission Rate                                                             0.7166415124050377
+MORT_30_COPD            Chronic Obstructive Pulmonary Disease (COPD) 30-Day Mortality Rate                                                    1.0657235271891128
+READM_30_AMI            Acute Myocardial Infarction (AMI) 30-Day Readmission Rate                                                             1.1757466307664364
+READM_30_STK            Stroke (STK) 30-Day Readmission Rate                                                                                  1.2472745138090833
+READM_30_PN             Pneumonia 30-Day Readmission Rate                                                                                     1.249265656483891
+MORT_30_AMI             Acute Myocardial Infarction (AMI) 30-Day Mortality Rate                                                               1.5634711439053257
+
+
+We can observe that many procedures appear in both methods of variability calculation (range vs variance). For example READM_30_HIP_KNEE, MORT_30_COPD and MORT_30_AMI.
+

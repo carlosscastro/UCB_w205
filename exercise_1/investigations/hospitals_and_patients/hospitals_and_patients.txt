@@ -1,0 +1,42 @@
+
+------------------------------------------------
+Hospital Quality Correlation to Survey Responses
+------------------------------------------------
+
+--------
+Overview
+--------
+
+We already have a single variable that represents an overall hospital quality score, which is thoroughly described in best_hospitals.txt. The variable can be found in the hospitals_ranking table, that relates a ProviderId to a OverallScore for the hospital.
+
+To be able to correlate the overall score for hospitals to survey responses, we need a single variable that defines the survey satisfaction. The procedure to obtain this variable is described into the Survey Responses Scores section below.
+
+-----------------------
+Survey Responses Scores
+-----------------------
+
+The survey data we have has responses for each individual question, and in addition it has 2 special columns for each hospital: the base score and the consistency score. The base score summarizes the responses from all the questions in a single score that ranges from 0 to 80, and the consistency score goes from 0 to 20 and higher values represent more consistently positive responses. The detailed procedure to calculate these fields is described by the source of the data in this article:
+
+http://www.hcahpsonline.org/Files/Hospital%20VBP%20Domain%20Score%20Calculation%20Step-by-Step%20Guide_V2.pdf
+
+With this in mind, the variable that will represent the survey response result for a hospital will be the addition of the base score and the consistency score, obtaining as a result a variable named SurveyScore that goes from 0 to 100, where 100 represents perfect survey results.
+
+--------------------------------------------
+Correlation: Pearson Correlation Coefficient
+--------------------------------------------
+
+Now that we have 2 variables for each hospital, the overall quality score and the survey response score, we can test whether there is a correlation between them.
+
+To test for correlation, we calculate the Pearson's correlation coefficient for those 2 variables. Hive SQL already has the corr aggregate function, so the calculation is simple.
+
+--------------------------------------------------------
+Results: Correlation Hospital Quality - Survey Responses
+--------------------------------------------------------
+
+Below is the result of the correlation:
+
+Pearson Correlation Coefficient: -0.4182955712294339
+
+A coefficient of ~-0.42 supports a negative correlation with weak to moderate practical effect. We can calculate the R squared coefficient by squaring the perason correlation coefficient, to quantify more the practical significance. We obtain an R squared coefficient of ~0.175, which means that ~17.5% of the variation in hospital quality if explained by our model.
+
+Before calculating the coefficient, we expected a positive correlation between high quality hospoitals and positive survey responses. However, the results propose a slight negative correlation. However, analyzing the survey individual responses for top hospitals, we observe that many responses have score 0, which may indicate incomplete or not answered surveys. We don't have information about not reponsed question, or how exactly it is represented. 

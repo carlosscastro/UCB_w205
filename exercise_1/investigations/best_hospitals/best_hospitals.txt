@@ -1,0 +1,84 @@
+
+--------------
+Best Hospitals
+--------------
+
+--------
+Overview
+--------
+
+To decide what the best hospitals are, we use data from readmissions, effective care and complications. We transform the scores for each metric in such a way that they have a same scale and then combine them into a single index, which we use to choose the top 10 hospitals.
+
+---------------------------------------------------
+Readmissions and Complications Score Transformation
+---------------------------------------------------
+
+### Scaling + Inverting ###
+
+The scores in the readmission and complications tables can only be compared to those of other hospitals for the same measure. For readmissions and complications particularly, lower scores are better. There is no clear minimum or maximum value in the data for scores.
+
+We transform the readmissions and complications score so that the worst hospital possible in terms of readmission gets a score of 0, and the best gets a score of 100 for a given measure. This is done through 2 operations: reversing the variable so that higher values mean better performance, and scaling the variable from 0 to 100. To accomplish that, we calculate minimum and maximum scores for each measure. Once we have the extreme scores, we transform a score to the 0-100 scale through the following formula:
+
+transformed_score_for_measure = (max_score_for_measure - score) * 100 / (max_score_for_measure  - min_score_for_measure)
+
+The result of this procedure can be found in complications_adjusted and readmissions_adjusted tables.
+
+### Calculating Hospital Score ###
+
+Once we have transformed the scores per measure, we want to aggregate the scores for each hospital so that the hospital score for readmissions or complications summarizes all the procedures. Since all variables have the same scale, and assumming that the weight of all measures can be considered equal, we summarize the score by hospital by taking the average of all the scores per measure.
+
+### Weighting Consistency ###
+
+Given several hospitals with the same score, we want to prioritize those for which the average is high while containing more metrics. For that, we punish hospitals with few metrics by substracting a 4% of the summarized score for each missing metric. The 4% percent value was found empirically.
+
+The result of this can be found in the WeightedScore column in the complications_ranking and readmissions_ranking table.
+
+-----------------------------------
+Effective Care Score Transformation
+-----------------------------------
+
+### Scaling ###
+
+Effective care scores differ from the previously discussed ones in that the scores in the data are better when they are higher. We still perform analogous transformations to scale the data so that 0 is the worst possible score and 100 is the best possible score. We do that by applying the following formula to the score for each hospital for each measure:
+
+transformed_score_for_measure = score * 100 / max_score_for_measure 
+
+The result of this can be found in the effective_care_ranking table.
+
+### Calculating Hospital Score ###
+
+We calculate the score per hospital in the same way we do it in the other dimensions, by taking the average of our scaled variable. The result of this process can be found in the effective_care_adjusted table.
+
+### Weighting Consistency ###
+
+Finally, we use the same method as presented for complications and readmissions to prize consistently successful hospitals that have more measures.
+
+----------------
+Hospital Ranking
+----------------
+
+Once we have the readmissions, complications and effective care weighted scores, we take the average of the three to get a overall score for hospitals that goes from 0 to 100, where higher score means higher hospital quality.
+
+The result of this procedure can be found in hospitals_ranking.
+
+-------------------------
+Results: Top 10 Hospitals
+-------------------------
+
+To retrieve the top 10 hospitals, we simply query the from the hospitals_ranking table ordering by overall score descending. The results are the following:
+
+
+ID      Hospital Name                                         State   Overall Score
+050573  EISENHOWER MEDICAL CENTER                               CA      70.57460077011937
+220077  BAYSTATE MEDICAL CENTER                                 MA      70.3786590056903
+420087  ROPER HOSPITAL                                          SC      69.8586850463089
+100087  SARASOTA MEMORIAL HOSPITAL                              FL      69.78960813397372
+340002  MEMORIAL MISSION HOSPITAL AND ASHEVILLE SURGERY CE      NC      69.76407536357283
+450184  MEMORIAL HERMANN HOSPITAL SYSTEM                        TX      69.38534852015034
+030103  MAYO CLINIC HOSPITAL                                    AZ      69.0447436685439
+050168  ST JUDE MEDICAL CENTER                                  CA      68.77498713786537
+450610  MEMORIAL HERMANN MEMORIAL CITY MEDICAL CENTER           TX      68.53414211457972
+030065  BANNER DESERT MEDICAL CENTER                            AZ      68.08653372410193
+
+Analyzing the raw data for the top 10 hospitals, we can see that for example most of their metrics for readmissions and complications rank better than the country average, which is a secondary indication that we made a good choice, in addition to the logical reasoning presented above to construct our scores.
+

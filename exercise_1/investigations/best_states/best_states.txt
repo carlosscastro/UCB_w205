@@ -1,0 +1,30 @@
+
+-----------
+Best States
+-----------
+
+--------
+Overview
+--------
+
+The best states are calculated using the same data sources as best_hospitals, so please refer to best_hospitals.txt before reading this for information about data source and variable transformation.
+
+----------------------
+Results: Top 10 States
+----------------------
+
+To retrieve the top 10 states, we simply calculate the average overall score of the hospitals by querying the hospitals_ranking table ordering by average overall score descending, while grouping by hospital. The results are the following:
+
+State   Average Score (higher score means higher hospital quality)
+NJ      55.1043592669836
+FL      50.97320374238682
+DE      50.616884609653184
+RI      48.66281098935254
+CT      47.24097487476256
+SC      44.91044197110788
+HI      44.89132789301088
+VA      44.79563717887987
+NY      44.25487269604362
+MA      44.120220403391315
+
+
